@@ -57,5 +57,7 @@
 	<classpathentry kind="lib" path="/home/hadoop/workspace/moead_MR/src/commons-math-2.2-sources.jar"/>
 	<classpathentry kind="lib" path="/home/hadoop/workspace/moead_MR/src/commons-math_trimmed2.jar"/>
 	<classpathentry kind="lib" path="/home/hadoop/workspace/moead_MR/src/org.apache.commons.pool.jar"/>
+	<classpathentry kind="lib" path="/home/hadoop/hadoop-1.2.1/hadoop-examples-1.2.1.jar"/>
+	<classpathentry kind="lib" path="/home/hadoop/hadoop-1.2.1/hadoop-test-1.2.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

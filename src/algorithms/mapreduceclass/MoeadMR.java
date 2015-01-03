@@ -61,8 +61,10 @@ public class MoeadMR {
 		// }
 		// dataOutputStream.close();
 
-		String in = "hdfs://master:9000/moead_MR/moead.txt";
-		String out = "hdfs://master:9000/moead_MR/";
+		String in = "hdfs://localhost:9000/user/root/input/moead.txt";
+		String out = "hdfs:////localhost:9000/user/root/input/";
+//		String in = "/home/hadoop/Desktop/moead_MR/moead.txt";
+//		String out = "/home/hadoop/Desktop/moead_MR/";
 		MoeaData mData = new MoeaData(impl.neighbourTable, impl.idealpoint,
 				impl.weights, impl.mainpop, ZDT1.getInstance(30),
 				impl.neighboursize, impl.popsize, impl.F, impl.CR);
@@ -78,7 +80,7 @@ public class MoeadMR {
 		int time = 4;
 		
 		String localSrc = "/home/hadoop/Desktop/moead.txt";
-		
+//		String localSrc = "hdfs:////localhost:9000/user/root/moead.txt";
 		mData.write2File(localSrc, time);
 		mData.FileCopy2hdfs(localSrc, in);
 		
