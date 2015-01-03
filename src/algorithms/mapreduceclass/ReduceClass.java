@@ -68,9 +68,9 @@ public class ReduceClass extends Reducer<Text, Text, NullWritable, Text> {
 		sum = strArray.get(index);
 
 		MOEAD moead = new MOEAD();
-		System.out.println("oCH.value is : \n" + oChromosomes.get(0).objectivesValue[0] + " " + oChromosomes.get(0).objectivesValue[1] );
+		//System.out.println("oCH.value is : \n" + oChromosomes.get(0).objectivesValue[0] + " " + oChromosomes.get(0).objectivesValue[1] );
 		moead.updateReference(idealpoint, oChromosomes.get(0));
-		System.out.println("idealpoint is :\n" + idealpoint[0] + " " + idealpoint[1]);
+		//System.out.println("idealpoint is :\n" + idealpoint[0] + " " + idealpoint[1]);
 		result.set(sum);
 		// result.set(sum);
 		// 需要对outputformat进行重写，使得在输出时将“\t”变为“,”

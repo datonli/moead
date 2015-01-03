@@ -15,6 +15,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
+import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.util.Progressable;
 
 import algorithms.mo.IMultiObjectiveProblem;
@@ -107,7 +108,6 @@ public class MoeaData {
 		chromosome.estimatedObjectiveValue[0] = Double.parseDouble(info[k + 7]);
 		chromosome.estimatedObjectiveValue[1] = Double.parseDouble(info[k + 8]);
 
-//		System.out.println(info.length);
 		chromosome.realGenes = new double[info.length - k - 11];
 		for (int l = 0; l < info.length - k - 11; l++)
 			chromosome.realGenes[l] = Double.parseDouble(info[l + k + 9]);
@@ -146,9 +146,6 @@ public class MoeaData {
 						+ this.weights.get(num)[1] + " ";
 			else
 			{
-//				System.out.println("");
-//				System.out.println(this.neighbourTable.size());
-//				System.out.println("\n" + this.chromosomes.get(0).realGenes.length);
 				str += this.chromosomes.get(num).toString() + ","
 						+ this.weights.get(num)[0] + ","
 						+ this.weights.get(num)[1] + " ";
@@ -161,22 +158,6 @@ public class MoeaData {
 			str += this.idealpoint[num] + ",";
 		}
 
-		// for(int i = 0; i < this.weights.size(); i ++)
-		// {
-		// str += this.weights.get(i)[0]
-		// + ","
-		// + this.weights.get(i)[1] + ",";
-		// }
-		// for(int i = 0 ; i < this.idealpoint.length; i ++)
-		// {
-		// str += this.idealpoint[i] + ",";
-		// }
-		// for(int i = 0; i < this.neighbourTable.size(); i ++)
-		// {
-		// str += this.neighbourTable.get(i).toString() + ",";
-		// }
-		// str += this.mainpop.toString() + this.CR + "," + this.F + "," +
-		// this.neighboursize + " ";
 		return str;
 	}
 
@@ -188,6 +169,16 @@ public class MoeaData {
 			dataOutputStream.writeBytes("\n");
 		}
 		dataOutputStream.close();
+		return true;
+	}
+	
+	public boolean write2HdfsFile(String filename, int time) throws IOException {
+		HdfsOper hdfs = new HdfsOper();
+		String moeadPopu = "";
+		for (int count = 0; count < time; count++) {
+			moeadPopu += this.toString() + "\n";
+		}
+		hdfs.createFile(filename,moeadPopu);
 		return true;
 	}
 
