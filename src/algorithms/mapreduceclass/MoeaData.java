@@ -31,6 +31,7 @@ public class MoeaData {
 	public double[] idealpoint = new double[2];
 	public List<double[]> weights = new ArrayList<double[]>();
 	public int popsize;
+	
 	// 好像problem的可以先不管，直接在要用的map里面写定ZDT1这个problem来进行生成
 	public IMultiObjectiveProblem problem;
 
@@ -54,7 +55,13 @@ public class MoeaData {
 		this.popsize = popsize;
 
 	}
-
+	
+	public void setChromosomes(List<CMoChromosome> chromosomes)
+	{
+		this.chromosomes = chromosomes;
+	}
+	
+	/*
 	public MoeaData(List<int[]> neighbourTable, double[] idealpoint,
 			List<double[]> weights, List<CMoChromosome> chromosomes,
 			ZDT1 problem, int neighboursize, int popsize, double F, double CR) {
@@ -69,7 +76,7 @@ public class MoeaData {
 		this.popsize = popsize;
 		// this.mainpop.chromosomes = chromosomes;
 	}
-
+*/
 	public String toStringLine(int i, List<CMoChromosome> chromosomes,
 			List<int[]> neighbourTable, List<double[]> weights) {
 		String str = "";
@@ -85,8 +92,8 @@ public class MoeaData {
 			List<int[]> neighbourTable, List<double[]> weights, String str) {
 		String[] info = this.stringSplitLine(str);
 		int k = 0;
-		int[] neighbourTableIntArray = new int[30];
-		for (int i = 0; i < 30; i++, k++) {
+		int[] neighbourTableIntArray = new int[neighboursize];
+		for (int i = 0; i < neighboursize; i++, k++) {
 			neighbourTableIntArray[i] = Integer.parseInt(info[i]);
 		}
 		neighbourTable.add(neighbourTableIntArray);

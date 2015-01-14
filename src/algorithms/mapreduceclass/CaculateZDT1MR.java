@@ -16,14 +16,12 @@ public class CaculateZDT1MR {
 
 	public static void main(String[] args) throws IOException {
 		MoeaData mData = new MoeaData();
-		String out = "/home/hadoop/Desktop/MyJobDir/moead_MR/";
 		for (int i = 0; i < 100; i++) {
 				List<CMoChromosome> chromosomes = new ArrayList<CMoChromosome>();
 				List<int[]> neighbourTable = new ArrayList<int[]>();
 				List<double[]> weights = new ArrayList<double[]>();
-
-				FileReader fr = new FileReader(out + i + "/part-r-00000");
-				BufferedReader br = new BufferedReader(fr);
+				HdfsOper hdfs = new HdfsOper();
+				BufferedReader br = new BufferedReader(hdfs.open("/user/root/input/" + i + "/part-r-00000"));
 				String line = new String();
 				String str = "";
 				while ((line = br.readLine()) != null) {
@@ -31,15 +29,13 @@ public class CaculateZDT1MR {
 							weights, line);
 				}
 				br.close();
-				fr.close();
-				
 				for (int k = 0; k < chromosomes.size(); k++) {
 					str += chromosomes.get(k).objectivesValue[0]
 							+ " "
 							+ chromosomes.get(k).objectivesValue[1]
 							+ "\n";
 				}
-				mData.write2File("/home/hadoop/Desktop/MOP_ZDT1/" + i + ".txt", str);
+				mData.write2File("/home/hadoop/experiment/parallel_result/" + i + ".txt", str);
 			}
 		}
 }

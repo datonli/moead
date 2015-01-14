@@ -142,12 +142,13 @@ public class HdfsOper {
 	public static void main(String[] args) throws IOException {
 		JobConf conf = config();
 		HdfsOper hdfs = new HdfsOper(conf);
-		hdfs.ls("/");
-		hdfs.ls("/user/root/input/");
-		hdfs.cat("/user/root/input/test1.txt");
-		hdfs.createFile("/user/root/input/test1.txt", "\ntest again!!!\n");
-		hdfs.cat("/user/root/input/test1.txt");
+		hdfs.mkdir("/moead/");
+//		hdfs.ls("/");
+//		hdfs.ls("/user/root/input/");
+//		hdfs.cat("/user/root/input/test1.txt");
+//		hdfs.createFile("/user/root/input/test1.txt", "\ntest again!!!\n");
+//		hdfs.cat("/user/root/input/test1.txt");
 		for(int i = 0; i < 100; i ++)
-			hdfs.rm("/user/root/input/" + i + "/");
+			hdfs.rm("/moead/" + i + "/");
 	}
 }

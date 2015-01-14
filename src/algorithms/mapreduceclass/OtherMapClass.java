@@ -84,12 +84,12 @@ public class OtherMapClass extends Mapper<Object, Text, Text, Text> {
 		// 7-16 目前面临的问题是怎么将map输出多个key/value对，而不是只产生一个输出结果！！！
 		// 解决办法：不停往context写就可以了！！
 
-		System.out.println(mData.popsize);
-		for (int k = 0; k < mData.popsize; k++)
-			System.out.print(mData.chromosomes.get(k).fitnessValue + " " ) ;
-		System.out.println("");
-		System.out.println("idealpoint is:");
-		System.out.println(mData.idealpoint[0] + " " + mData.idealpoint[1]);
+		//System.out.println(mData.popsize);
+		//for (int k = 0; k < mData.popsize; k++)
+			//System.out.print(mData.chromosomes.get(k).fitnessValue + " " ) ;
+		//System.out.println("");
+		//System.out.println("idealpoint is:");
+		//System.out.println(mData.idealpoint[0] + " " + mData.idealpoint[1]);
 		for (int k = 0; k < mData.popsize; k++) {
 			indivInfo.set(mData.toStringLine(k, mData.chromosomes, mData.neighbourTable, mData.weights));
 			// chromosome.set()
