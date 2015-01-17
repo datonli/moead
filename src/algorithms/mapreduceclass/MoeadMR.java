@@ -28,9 +28,10 @@ public class MoeadMR {
 		// IMultiObjectiveProblem problem = ZDT2.getInstance(30);
 		System.out.println("Test Solving Started for: " + problem.getName());
 
-		impl.popsize = 5000;
-		impl.neighboursize = 300;
-		impl.TotalItrNum = 800;
+		impl.popsize = 1000;
+		impl.neighboursize = 30;
+		impl.TotalItrNum = 40;
+		
 		//the number of time match the slave number will be better
 		int time = 4;
 		int loopTime = impl.TotalItrNum / time;
@@ -38,7 +39,7 @@ public class MoeadMR {
 		impl.setNumObjectives(problem.getObjectiveSpaceDimension());
 		impl.setNumParameters(problem.getParameterSpaceDimension());
 		impl.initialize();
-		
+
 		String in = "hdfs://localhost:9000/moead/moead.txt";
 		String out = "hdfs://localhost:9000/moead/";
 		MoeaData mData = new MoeaData(impl.neighbourTable, impl.idealpoint,
@@ -48,6 +49,8 @@ public class MoeadMR {
 		Configuration conf = new Configuration();
 
 		mData.write2HdfsFile(in, time);
+		long midTime=System.currentTimeMillis();
+		System.out.println("initialize time : " + (midTime - startTime));
 		impl.mainpop = null;
 		for (int i = 0; i < loopTime; i++) {
 			//hdfs.mkdir("/user/root/input/" + i + "/");
@@ -71,13 +74,13 @@ public class MoeadMR {
 				impl.neighbourTable = new ArrayList<int[]>(neighbourTable);
 				impl.weights = new ArrayList<double[]>(weights);
 				mData.setChromosomes(new ArrayList<CMoChromosome>(chromosomes));
-				/*
-				mData = new MoeaData(impl.neighbourTable, impl.idealpoint,
+				
+			/*	mData = new MoeaData(impl.neighbourTable, impl.idealpoint,
 						impl.weights,
 						new ArrayList<CMoChromosome>(chromosomes),
 						ZDT1.getInstance(30), impl.neighboursize, impl.popsize,
-						impl.F, impl.CR);
-				*/
+						impl.F, impl.CR);*/
+				
 				mData.write2HdfsFile(in, time);
 			}
 
@@ -96,5 +99,8 @@ public class MoeadMR {
 		}
 		long endTime=System.currentTimeMillis();
 		System.out.println("running time is : "+(endTime-startTime)+"ms");   
+		
+		CaculateZDT1MR caculateResult = new CaculateZDT1MR();
+		caculateResult.caculate(mData,  loopTime);
 	}
 }

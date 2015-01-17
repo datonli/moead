@@ -61,7 +61,7 @@ public class MoeaData {
 		this.chromosomes = chromosomes;
 	}
 	
-	/*
+	
 	public MoeaData(List<int[]> neighbourTable, double[] idealpoint,
 			List<double[]> weights, List<CMoChromosome> chromosomes,
 			ZDT1 problem, int neighboursize, int popsize, double F, double CR) {
@@ -74,9 +74,9 @@ public class MoeaData {
 		this.problem = problem;
 		this.weights = weights;
 		this.popsize = popsize;
-		// this.mainpop.chromosomes = chromosomes;
+//		this.mainpop.chromosomes = chromosomes;
 	}
-*/
+
 	public String toStringLine(int i, List<CMoChromosome> chromosomes,
 			List<int[]> neighbourTable, List<double[]> weights) {
 		String str = "";
@@ -89,7 +89,46 @@ public class MoeaData {
 	}
 
 	public void stringLine2Object(List<CMoChromosome> chromosomes,
-			List<int[]> neighbourTable, List<double[]> weights, String str) {
+			List<int[]> neighbourTable, List<double[]> weights,String str) {
+		String[] info = this.stringSplitLine(str);
+		int k = 0;
+		int[] neighbourTableIntArray = new int[neighboursize];
+		for (int i = 0; i < neighboursize; i++, k++) {
+			neighbourTableIntArray[i] = Integer.parseInt(info[i]);
+		}
+		neighbourTable.add(neighbourTableIntArray);
+		CMoChromosome chromosome = new CMoChromosome();
+		chromosome.objectivesValue = new double[2];
+		chromosome.objectivesEI = new double[2];
+		chromosome.estimatedObjectiveDevitation = new double[2];
+		chromosome.estimatedObjectiveValue = new double[2];
+
+		chromosome.fitnessValue = Double.parseDouble(info[k]);
+		chromosome.objectivesValue[0] = Double.parseDouble(info[k + 1]);
+		chromosome.objectivesValue[1] = Double.parseDouble(info[k + 2]);
+		chromosome.objectivesEI[0] = Double.parseDouble(info[k + 3]);
+		chromosome.objectivesEI[1] = Double.parseDouble(info[k + 4]);
+		chromosome.estimatedObjectiveDevitation[0] = Double
+				.parseDouble(info[k + 5]);
+		chromosome.estimatedObjectiveDevitation[1] = Double
+				.parseDouble(info[k + 6]);
+		chromosome.estimatedObjectiveValue[0] = Double.parseDouble(info[k + 7]);
+		chromosome.estimatedObjectiveValue[1] = Double.parseDouble(info[k + 8]);
+
+		chromosome.realGenes = new double[info.length - k - 11];
+		for (int l = 0; l < info.length - k - 11; l++)
+			chromosome.realGenes[l] = Double.parseDouble(info[l + k + 9]);
+		chromosomes.add(chromosome);
+
+		double[] weight = new double[2];
+		weight[0] = Double.parseDouble(info[info.length - 2]);
+		weight[1] = Double.parseDouble(info[info.length - 1]);
+		
+		weights.add(weight);
+	}
+	
+	public void stringLine2ObjectEnd(List<CMoChromosome> chromosomes,
+			List<int[]> neighbourTable, List<double[]> weights, int neighboursize,String str) {
 		String[] info = this.stringSplitLine(str);
 		int k = 0;
 		int[] neighbourTableIntArray = new int[neighboursize];
@@ -179,6 +218,7 @@ public class MoeaData {
 		return true;
 	}
 	
+	/*
 	public boolean write2HdfsFile(String filename, int time) throws IOException {
 		HdfsOper hdfs = new HdfsOper();
 		String moeadPopu = "";
@@ -188,7 +228,17 @@ public class MoeaData {
 		hdfs.createFile(filename,moeadPopu);
 		return true;
 	}
-
+	*/
+	public boolean write2HdfsFile(String filename, int time) throws IOException {
+		HdfsOper hdfs = new HdfsOper();
+		String moeadPopu = "";
+		for (int count = 0; count < time; count++) {
+			moeadPopu += this.toString() + "\n";
+		}
+		hdfs.createFile(filename,moeadPopu);
+		return true;
+	}
+	
 	public boolean write2File(String filename, String str) throws IOException {
 		DataOutputStream dataOutputStream = new DataOutputStream(
 				new FileOutputStream(filename));

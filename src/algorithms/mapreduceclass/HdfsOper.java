@@ -86,6 +86,24 @@ public class HdfsOper {
 		return (new InputStreamReader(fs.open(filePath)));
 	}
 
+	public void appendFile(String file,String content) throws IOException {
+		Path filePath = new Path(file);
+		FileSystem fs = FileSystem.get(URI.create(hdfsPath), conf);
+		byte[] buff = content.getBytes();
+		FSDataOutputStream os = null;
+		try {
+			os = fs.append(filePath);
+			
+			os.write(buff, 0, buff.length);
+			System.out.println("Append: " + file);
+
+		} finally {
+			if (os != null)
+				os.close();
+		}
+		fs.close();
+	}
+	
 	public void mkdir(String folder) throws IOException {
 		Path path = new Path(folder);
 		FileSystem fs = FileSystem.get(URI.create(hdfsPath), conf);
@@ -128,6 +146,7 @@ public class HdfsOper {
 		FSDataOutputStream os = null;
 		try {
 			os = fs.create(filePath);
+			
 			os.write(buff, 0, buff.length);
 			System.out.println("Create: " + file);
 
@@ -138,17 +157,57 @@ public class HdfsOper {
 		fs.close();
 	}
 
+	public void addContentFile(String file, String content) throws IOException {
+		Path filePath = new Path(file);
+		FileSystem fs = FileSystem.get(URI.create(hdfsPath), conf);
+		byte[] buff = content.getBytes();
+		FSDataOutputStream os = null;
+		if(!fs.exists(filePath))
+		{
+			try {
+				
+				os = fs.create(filePath);
+				
+				os.write(buff, 0, buff.length);
+				System.out.println("Create: " + file);
+	
+			} finally {
+				if (os != null)
+					os.close();
+			}
+		}
+		else
+		{
+			try {
+				os = fs.append(filePath);
+				
+				os.write(buff, 0, buff.length);
+				System.out.println("Append: " + file);
+
+			} finally {
+				if (os != null)
+					os.close();
+			}
+		}
+		fs.close();
+	}
+	
 	// test use cases
 	public static void main(String[] args) throws IOException {
 		JobConf conf = config();
 		HdfsOper hdfs = new HdfsOper(conf);
-		hdfs.mkdir("/moead/");
+//		hdfs.mkdir("/moead/");
 //		hdfs.ls("/");
 //		hdfs.ls("/user/root/input/");
-//		hdfs.cat("/user/root/input/test1.txt");
-//		hdfs.createFile("/user/root/input/test1.txt", "\ntest again!!!\n");
-//		hdfs.cat("/user/root/input/test1.txt");
+//		hdfs.addContentFile("/tmp/test.txt", "\ntest again!!!\n");
+//		hdfs.cat("/tmp/test.txt");
+//		hdfs.addContentFile("/tmp/test.txt", "\ntest again!!!\n");
+//		hdfs.cat("/tmp/test.txt");
+		
 		for(int i = 0; i < 100; i ++)
+		{
 			hdfs.rm("/moead/" + i + "/");
+			
+		}
 	}
 }

@@ -66,20 +66,23 @@ public class OtherMapClass extends Mapper<Object, Text, Text, Text> {
 		impl.setNumParameters(problem.getParameterSpaceDimension());
 		// impl.initialize();
 		MoChromosome offSpring = new CMoChromosome() ;
-		for (int i = 0; i < mData.popsize; i++) {
-			offSpring = impl.GeneticOPDE(mData.neighbourTable,
-					mData.neighboursize, mData.chromosomes, i);
-			impl.evaluate(offSpring);
-			impl.updateNeighbours(mData.weights, mData.idealpoint,
-					mData.chromosomes, mData.neighbourTable,
-					mData.neighboursize, offSpring, i);
-//			System.out.print(offSpring.fitnessValue + " " );
-//			System.out.println("First idealpoint is :\n" + mData.idealpoint[0] + " " + mData.idealpoint[1]);
-			impl.updateReference(mData.idealpoint, offSpring);
-//			System.out.println("then idealpoint is :\n" + mData.idealpoint[0] + " " + mData.idealpoint[1]);
-			impl.destroyChromosome(offSpring);
+		int internalTime = 10;
+		for(int t = 0 ; t < internalTime ; t ++){
+			for (int i = 0; i < mData.popsize; i++) {
+				offSpring = impl.GeneticOPDE(mData.neighbourTable,
+						mData.neighboursize, mData.chromosomes, i);
+				impl.evaluate(offSpring);
+				impl.updateNeighbours(mData.weights, mData.idealpoint,
+						mData.chromosomes, mData.neighbourTable,
+						mData.neighboursize, offSpring, i);
+	//			System.out.print(offSpring.fitnessValue + " " );
+	//			System.out.println("First idealpoint is :\n" + mData.idealpoint[0] + " " + mData.idealpoint[1]);
+				impl.updateReference(mData.idealpoint, offSpring);
+	//			System.out.println("then idealpoint is :\n" + mData.idealpoint[0] + " " + mData.idealpoint[1]);
+				impl.destroyChromosome(offSpring);
+			}
 		}
-		System.out.println(offSpring.parDimension);
+		//System.out.println(offSpring.parDimension);
 
 		// 7-16 目前面临的问题是怎么将map输出多个key/value对，而不是只产生一个输出结果！！！
 		// 解决办法：不停往context写就可以了！！
