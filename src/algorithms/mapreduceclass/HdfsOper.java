@@ -204,7 +204,7 @@ public class HdfsOper {
 //		hdfs.addContentFile("/tmp/test.txt", "\ntest again!!!\n");
 //		hdfs.cat("/tmp/test.txt");
 		
-		for(int i = 0; i < 100; i ++)
+		for(int i = 0; i <= 100; i ++)
 		{
 			hdfs.rm("/moead/" + i + "/");
 			
