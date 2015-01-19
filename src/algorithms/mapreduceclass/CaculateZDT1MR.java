@@ -24,7 +24,11 @@ public class CaculateZDT1MR {
 			BufferedReader br = new BufferedReader(hdfs.open("/moead/" + i + "/part-r-00000"));
 			String line = new String();
 			String str = "";
-			while ((line = br.readLine()) != null) {
+//			while ((line = br.readLine()) != null) {
+//				mData.stringLine2ObjectEnd(chromosomes, neighbourTable,
+//						weights, mData.neighboursize,line);
+//			}
+			if ((line = br.readLine()) != null) {
 				mData.stringLine2ObjectEnd(chromosomes, neighbourTable,
 						weights, mData.neighboursize,line);
 			}
@@ -51,9 +55,9 @@ public class CaculateZDT1MR {
 				BufferedReader br = new BufferedReader(hdfs.open("/moead/" + i + "/part-r-00000"));
 				String line = new String();
 				String str = "";
-				while ((line = br.readLine()) != null) {
+				if ((line = br.readLine()) != null) {
 					mData.stringLine2ObjectEnd(chromosomes, neighbourTable,
-							weights,10, line);
+							weights,30, line);
 				}
 				br.close();
 				for (int k = 0; k < chromosomes.size(); k++) {

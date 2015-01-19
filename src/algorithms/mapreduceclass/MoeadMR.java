@@ -41,13 +41,14 @@ public class MoeadMR {
 		impl.initialize();
 
 		String in = "hdfs://localhost:9000/moead/moead.txt";
+		String originalFile = "hdfs://localhost:9000/moead/0/part-r-00000";
 		String out = "hdfs://localhost:9000/moead/";
 		MoeaData mData = new MoeaData(impl.neighbourTable, impl.idealpoint,
 				impl.weights, impl.mainpop, ZDT1.getInstance(30),
 				impl.neighboursize, impl.popsize, impl.F, impl.CR);
 
 		Configuration conf = new Configuration();
-
+//		mData.write2HdfsFile(originalFile, 1);
 		mData.write2HdfsFile(in, time);
 		long midTime=System.currentTimeMillis();
 		System.out.println("initialize time : " + (midTime - startTime));
@@ -73,13 +74,13 @@ public class MoeadMR {
 
 				impl.neighbourTable = new ArrayList<int[]>(neighbourTable);
 				impl.weights = new ArrayList<double[]>(weights);
-				mData.setChromosomes(new ArrayList<CMoChromosome>(chromosomes));
+//				mData.setChromosomes(new ArrayList<CMoChromosome>(chromosomes));
 				
-			/*	mData = new MoeaData(impl.neighbourTable, impl.idealpoint,
+				mData = new MoeaData(impl.neighbourTable, impl.idealpoint,
 						impl.weights,
 						new ArrayList<CMoChromosome>(chromosomes),
 						ZDT1.getInstance(30), impl.neighboursize, impl.popsize,
-						impl.F, impl.CR);*/
+						impl.F, impl.CR);
 				
 				mData.write2HdfsFile(in, time);
 			}
