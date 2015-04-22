@@ -9,6 +9,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.NLineInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import algorithms.mo.IMultiObjectiveProblem;
@@ -47,6 +48,8 @@ public class MoeadMR {
 				impl.neighboursize, impl.popsize, impl.F, impl.CR);
 
 		Configuration conf = new Configuration();
+		conf.setInt("mapreduce.input.lineinputformat.linespermap",1);
+		
 		mData.write2HdfsFile(in, time);
 		long midTime=System.currentTimeMillis();
 		System.out.println("initialize time : " + (midTime - startTime));
@@ -84,6 +87,7 @@ public class MoeadMR {
 			}
 
 			Job job = new Job(conf, "moead" + i);
+			job.setInputFormatClass(NLineInputFormat.class);
 			job.setJarByClass(MoeadMR.class);
 			job.setMapperClass(OtherMapClass.class);
 //			job.setCombinerClass(ReduceClass.class);
