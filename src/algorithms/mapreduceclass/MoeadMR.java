@@ -54,12 +54,24 @@ public class MoeadMR {
 		long midTime=System.currentTimeMillis();
 		System.out.println("initialize time : " + (midTime - startTime));
 		impl.mainpop = null;
+		Job job = new Job(conf, "moead");
+		job.setJarByClass(MoeadMR.class);
+		job.setInputFormatClass(NLineInputFormat.class);
+		job.setMapperClass(OtherMapClass.class);
+//		job.setCombinerClass(ReduceClass.class);
+		job.setReducerClass(ReduceClass.class);
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(Text.class);
+		FileInputFormat.addInputPath(job, new Path(in));
+		List<CMoChromosome> chromosomes = new ArrayList<CMoChromosome>();
+		List<int[]> neighbourTable = new ArrayList<int[]>();
+		List<double[]> weights = new ArrayList<double[]>();
 		for (int i = 0; i < loopTime; i++) {
 			//hdfs.mkdir("/user/root/input/" + i + "/");
-			if (i > 1) {
-				List<CMoChromosome> chromosomes = new ArrayList<CMoChromosome>();
-				List<int[]> neighbourTable = new ArrayList<int[]>();
-				List<double[]> weights = new ArrayList<double[]>();
+			if (i >= 1) {
+				chromosomes.clear();
+				neighbourTable.clear();
+				weights.clear();
 				//FileReader fr = new FileReader(out + (i - 1) + "/part-r-00000");
 				BufferedReader br = new BufferedReader(hdfs.open("/moead/" + (i - 1) + "/part-r-00000"));
 				String line = new String();
@@ -71,7 +83,6 @@ public class MoeadMR {
 				}
 				br.close();
 				//fr.close();
-
 
 				impl.neighbourTable = new ArrayList<int[]>(neighbourTable);
 				impl.weights = new ArrayList<double[]>(weights);
@@ -85,16 +96,7 @@ public class MoeadMR {
 				
 				mData.write2HdfsFile(in, time);
 			}
-
-			Job job = new Job(conf, "moead" + i);
-			job.setInputFormatClass(NLineInputFormat.class);
-			job.setJarByClass(MoeadMR.class);
-			job.setMapperClass(OtherMapClass.class);
-//			job.setCombinerClass(ReduceClass.class);
-			job.setReducerClass(ReduceClass.class);
-			job.setOutputKeyClass(Text.class);
-			job.setOutputValueClass(Text.class);
-			FileInputFormat.addInputPath(job, new Path(in));
+			
 			FileOutputFormat.setOutputPath(job, new Path(out + i + "/"));
 			System.out.println("End the " + i + "th job");
 			job.waitForCompletion(true);
