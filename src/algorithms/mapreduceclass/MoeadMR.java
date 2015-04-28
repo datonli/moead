@@ -29,7 +29,7 @@ public class MoeadMR {
 		// IMultiObjectiveProblem problem = ZDT2.getInstance(30);
 		System.out.println("Test Solving Started for: " + problem.getName());
 
-		impl.popsize = 1000;
+		impl.popsize = 100;
 		impl.neighboursize = 30;
 		impl.TotalItrNum = 40;
 		
@@ -39,18 +39,24 @@ public class MoeadMR {
 		impl.setMultiObjectiveProblem(problem);
 		impl.setNumObjectives(problem.getObjectiveSpaceDimension());
 		impl.setNumParameters(problem.getParameterSpaceDimension());
+		
 		impl.initialize();
 
 		String in = "hdfs://localhost:9000/moead/moead.txt";
 		String out = "hdfs://localhost:9000/moead/";
+		
+		long newMD_Time=System.currentTimeMillis();
 		MoeaData mData = new MoeaData(impl.neighbourTable, impl.idealpoint,
 				impl.weights, impl.mainpop, ZDT1.getInstance(30),
 				impl.neighboursize, impl.popsize, impl.F, impl.CR);
-
+		newMD_Time = System.currentTimeMillis() - newMD_Time;
+		System.out.println("newMD_Time time is : "+ newMD_Time +"ms");
 		Configuration conf = new Configuration();
 		
-		
+		long writeHF_Time=System.currentTimeMillis();
 		mData.write2HdfsFile(in, time);
+		writeHF_Time = System.currentTimeMillis() - writeHF_Time;
+		System.out.println("writeHF_Time time is : "+ writeHF_Time +"ms");
 		long midTime=System.currentTimeMillis();
 		System.out.println("initialize time : " + (midTime - startTime));
 		impl.mainpop = null;
@@ -58,6 +64,8 @@ public class MoeadMR {
 		List<CMoChromosome> chromosomes = new ArrayList<CMoChromosome>();
 		List<int[]> neighbourTable = new ArrayList<int[]>();
 		List<double[]> weights = new ArrayList<double[]>();
+		long[] writeHF_Time_Array = new long[loopTime];
+		writeHF_Time_Array[0] = writeHF_Time;
 		for (int i = 0; i < loopTime; i++) {
 			//hdfs.mkdir("/user/root/input/" + i + "/");
 			if (i >= 1) {
@@ -85,8 +93,11 @@ public class MoeadMR {
 						new ArrayList<CMoChromosome>(chromosomes),
 						ZDT1.getInstance(30), impl.neighboursize, impl.popsize,
 						impl.F, impl.CR);
-				
+				writeHF_Time = System.currentTimeMillis();
 				mData.write2HdfsFile(in, time);
+				writeHF_Time = System.currentTimeMillis() - writeHF_Time;
+				writeHF_Time_Array[i] = writeHF_Time;
+				
 			}
 //			mapreduce.input.lineinputformat.linespermap
 //			conf.setInt("mapreduce.input.lineinputformat.linespermap",1);
@@ -106,10 +117,13 @@ public class MoeadMR {
 			FileOutputFormat.setOutputPath(job, new Path(out + i + "/"));
 			System.out.println("End the " + i + "th job");
 			job.waitForCompletion(true);
-
 		}
 		long endTime=System.currentTimeMillis();
-		System.out.println("running time is : "+(endTime-startTime)+"ms");   
+		System.out.println("running time is : "+(endTime-startTime)+"ms");
+		long sum = 0;
+		for(int t = 0; t < writeHF_Time_Array.length; t ++)
+			sum += writeHF_Time_Array[t];
+		System.out.println("total write hf time is : "+ sum +" ms"); 
 		
 		CaculateZDT1MR caculateResult = new CaculateZDT1MR();
 		caculateResult.caculate(mData,  loopTime);
