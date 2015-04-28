@@ -48,21 +48,13 @@ public class MoeadMR {
 				impl.neighboursize, impl.popsize, impl.F, impl.CR);
 
 		Configuration conf = new Configuration();
-		conf.setInt("mapreduce.input.lineinputformat.linespermap",1);
+		
 		
 		mData.write2HdfsFile(in, time);
 		long midTime=System.currentTimeMillis();
 		System.out.println("initialize time : " + (midTime - startTime));
 		impl.mainpop = null;
-		Job job = new Job(conf, "moead");
-		job.setJarByClass(MoeadMR.class);
-		job.setInputFormatClass(NLineInputFormat.class);
-		job.setMapperClass(OtherMapClass.class);
-//		job.setCombinerClass(ReduceClass.class);
-		job.setReducerClass(ReduceClass.class);
-		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(Text.class);
-		FileInputFormat.addInputPath(job, new Path(in));
+		
 		List<CMoChromosome> chromosomes = new ArrayList<CMoChromosome>();
 		List<int[]> neighbourTable = new ArrayList<int[]>();
 		List<double[]> weights = new ArrayList<double[]>();
@@ -96,7 +88,21 @@ public class MoeadMR {
 				
 				mData.write2HdfsFile(in, time);
 			}
+//			mapreduce.input.lineinputformat.linespermap
+//			conf.setInt("mapreduce.input.lineinputformat.linespermap",1);
+			Job job = new Job(conf, "moead");
+//			NLineInputFormat.setNumLinesPerSplit(job,1);
+			System.out.println("split per map is : " + NLineInputFormat.getNumLinesPerSplit(job));
 			
+			job.setJarByClass(MoeadMR.class);
+			job.setInputFormatClass(NLineInputFormat.class);
+			
+			job.setMapperClass(OtherMapClass.class);
+//			job.setCombinerClass(ReduceClass.class);
+			job.setReducerClass(ReduceClass.class);
+			job.setOutputKeyClass(Text.class);
+			job.setOutputValueClass(Text.class);
+			FileInputFormat.addInputPath(job, new Path(in));
 			FileOutputFormat.setOutputPath(job, new Path(out + i + "/"));
 			System.out.println("End the " + i + "th job");
 			job.waitForCompletion(true);
