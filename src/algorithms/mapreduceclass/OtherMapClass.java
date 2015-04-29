@@ -12,7 +12,7 @@ import algorithms.mo.prolem.ZDT1;
 import algorithms.moead.MOEAD;
 
 public class OtherMapClass extends Mapper<Object, Text, Text, Text> {
-
+	public static long timeRecord = 0;
 	long weightVectorNum;
 
 	Text weightVector = new Text();
@@ -20,7 +20,7 @@ public class OtherMapClass extends Mapper<Object, Text, Text, Text> {
 
 	public void map(Object key, Text value, Context context)
 			throws IOException, InterruptedException {
-
+		long time=System.currentTimeMillis();
 		String str = value.toString();
 		MoeaData mData = new MoeaData();
 		mData.str2MoeaData(str);
@@ -57,5 +57,7 @@ public class OtherMapClass extends Mapper<Object, Text, Text, Text> {
 					+ mData.weights.get(k)[1]);
 			context.write(weightVector, indivInfo);
 		}
+		timeRecord += System.currentTimeMillis() - time;
+		System.out.println("mapper timeRecord is : " + timeRecord);
 	}
 }

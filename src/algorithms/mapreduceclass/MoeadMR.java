@@ -23,7 +23,8 @@ public class MoeadMR {
 		System.out.println("Test Created");
 		MOEAD impl = new MOEAD();
 		HdfsOper hdfs = new HdfsOper();
-		hdfs.mkdir("/moead/");
+		
+		hdfs.mkdir("/moead/",(short)1);
 		IMultiObjectiveProblem problem = ZDT1.getInstance(30);
 		
 		// IMultiObjectiveProblem problem = ZDT2.getInstance(30);
@@ -51,8 +52,13 @@ public class MoeadMR {
 				impl.neighboursize, impl.popsize, impl.F, impl.CR);
 		newMD_Time = System.currentTimeMillis() - newMD_Time;
 		System.out.println("newMD_Time time is : "+ newMD_Time +"ms");
-		Configuration conf = new Configuration();
 		
+		Configuration conf = new Configuration();
+		/*
+		conf.addResource(new Path("/home/hadoop/hadoop-1.2.1/conf/core-site.xml"));
+		conf.addResource(new Path("/home/hadoop/hadoop-1.2.1/conf/hdfs-site.xml"));
+		conf.addResource(new Path("/home/hadoop/hadoop-1.2.1/conf/mapred-site.xml"));
+		*/
 		long writeHF_Time=System.currentTimeMillis();
 		mData.write2HdfsFile(in, time);
 		writeHF_Time = System.currentTimeMillis() - writeHF_Time;
@@ -66,6 +72,10 @@ public class MoeadMR {
 		List<double[]> weights = new ArrayList<double[]>();
 		long[] writeHF_Time_Array = new long[loopTime];
 		writeHF_Time_Array[0] = writeHF_Time;
+		
+		
+		
+		
 		for (int i = 0; i < loopTime; i++) {
 			//hdfs.mkdir("/user/root/input/" + i + "/");
 			if (i >= 1) {
@@ -107,6 +117,7 @@ public class MoeadMR {
 			
 			job.setJarByClass(MoeadMR.class);
 			job.setInputFormatClass(NLineInputFormat.class);
+			
 			
 			job.setMapperClass(OtherMapClass.class);
 //			job.setCombinerClass(ReduceClass.class);

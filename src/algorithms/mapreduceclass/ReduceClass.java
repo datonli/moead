@@ -15,10 +15,11 @@ import algorithms.moead.MOEAD;
 
 public class ReduceClass extends Reducer<Text, Text, NullWritable, Text> {
 	private Text result = new Text();
-
+	private static long timeRecord = 0;
 	// private IntWritable result = new IntWritable();
 	public void reduce(Text key, Iterable<Text> values, Context context)
 			throws IOException, InterruptedException {
+		long time=System.currentTimeMillis();
 		String sum = "";
 		// int sum = 0;
 		List<CMoChromosome> chromosomes = new ArrayList<CMoChromosome>();
@@ -78,6 +79,8 @@ public class ReduceClass extends Reducer<Text, Text, NullWritable, Text> {
 		NullWritable nullw = null;
 		// context.write(key, result);
 		context.write(nullw, result);
+		timeRecord += System.currentTimeMillis() - time;
+		System.out.println("reducer timeRecord is : " + timeRecord);
 	}
 
 	class SortByFitnessValue implements Comparator<CMoChromosome> {

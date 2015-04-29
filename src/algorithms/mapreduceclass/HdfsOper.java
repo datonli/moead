@@ -26,6 +26,7 @@ public class HdfsOper {
 		this(HDFS, config());
 	}
 
+	
 	public HdfsOper(Configuration conf) {
 		this(HDFS, conf);
 	}
@@ -36,12 +37,14 @@ public class HdfsOper {
 	}
 
 	// load the configure files
-	public static JobConf config() {
-		JobConf conf = new JobConf(HdfsOper.class);
-		conf.setJobName("HdfsDAO");
-		conf.addResource("classpath:/hadoop/core-site.xml");
-		conf.addResource("classpath:/hadoop/hdfs-site.xml");
-		conf.addResource("classpath:/hadoop/mapred-site.xml");
+	public static Configuration config() {
+		Configuration conf = new JobConf(HdfsOper.class);
+		conf.addResource(new Path("/home/hadoop/hadoop-1.2.1/conf/core-site.xml"));
+		conf.addResource(new Path("/home/hadoop/hadoop-1.2.1/conf/hdfs-site.xml"));
+		conf.addResource(new Path("/home/hadoop/hadoop-1.2.1/conf/mapred-site.xml"));
+//		conf.addResource("classpath:/hadoop/core-site.xml");
+//		conf.addResource("classpath:/hadoop/hdfs-site.xml");
+//		conf.addResource("classpath:/hadoop/mapred-site.xml");
 		return conf;
 	}
 
@@ -104,9 +107,21 @@ public class HdfsOper {
 		fs.close();
 	}
 	
+	public void mkdir(String folder,short replicationNum) throws IOException {
+		Path path = new Path(folder);
+		FileSystem fs = FileSystem.get(URI.create(hdfsPath), conf);
+		fs.setReplication(path,replicationNum);
+		if (!fs.exists(path)) {
+			fs.mkdirs(path);
+			System.out.println("Create: " + folder);
+		}
+		fs.close();
+	}
+	
 	public void mkdir(String folder) throws IOException {
 		Path path = new Path(folder);
 		FileSystem fs = FileSystem.get(URI.create(hdfsPath), conf);
+		fs.setReplication(path,(short)1);
 		if (!fs.exists(path)) {
 			fs.mkdirs(path);
 			System.out.println("Create: " + folder);
@@ -194,7 +209,16 @@ public class HdfsOper {
 	
 	// test use cases
 	public static void main(String[] args) throws IOException {
-		JobConf conf = config();
+		/*HdfsOper ho  = new HdfsOper();
+		try {
+			ho.rm("/test/a.txt");
+			ho.mkdir("/test/",(short)1);
+			ho.addContentFile("/test/a.txt","hello world!\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}*/
+		
+		Configuration conf = config();
 		HdfsOper hdfs = new HdfsOper(conf);
 //		hdfs.mkdir("/moead/");
 //		hdfs.ls("/");
@@ -209,5 +233,6 @@ public class HdfsOper {
 			hdfs.rm("/moead/" + i + "/");
 			
 		}
+		hdfs.rm("/moead/moead.txt");
 	}
 }

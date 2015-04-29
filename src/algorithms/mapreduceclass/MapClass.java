@@ -9,6 +9,9 @@ import algorithms.mo.ea.CMoChromosome;
 
 public class MapClass extends Mapper<Object, Text, Text, Text> {
 
+
+	
+	
 	String chromesomeString = new String();
 	long weightVectorNum ;
 	
@@ -16,6 +19,7 @@ public class MapClass extends Mapper<Object, Text, Text, Text> {
 	Text chromesome = new Text();
 	
 	public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+		
 		CMoChromosome iChromesome = new CMoChromosome();
 		double[] weights = new double[2];
 		
